@@ -17,7 +17,11 @@ public class NreplAgent {
         IFn wrapIced = Clojure.var("iced.nrepl", "wrap-iced");
         IFn defaultHandler = Clojure.var("nrepl.server", "default-handler");
         IFn start = Clojure.var("nrepl.server", "start-server");
-        start.invoke(Clojure.read(":port"), Clojure.read(port), Clojure.read(":handler"), wrapIced.invoke(defaultHandler.invoke()));
+        start.invoke(
+                Clojure.read(":bind"), "0.0.0.0", // this is needed if you are running the jvm in a docker container and you want to expose the nREPL port outside the container
+                                                  // TODO this is not safe for deployments in general
+                Clojure.read(":port"), Clojure.read(port), 
+                Clojure.read(":handler"), wrapIced.invoke(defaultHandler.invoke()));
         System.out.println("nrepl server started on port " + port);
     }
 }
